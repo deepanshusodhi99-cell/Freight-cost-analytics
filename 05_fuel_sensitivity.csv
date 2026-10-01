@@ -1,0 +1,5 @@
+diesel_quartile,min_diesel_cpl,max_diesel_cpl,avg_fuel_surcharge,fuel_pct_of_linehaul
+1,148.2,151.9,173.61,14.1
+2,151.9,156.4,191.81,15.5
+3,156.4,162.1,215.91,17.3
+4,162.1,183.3,251.78,20.3

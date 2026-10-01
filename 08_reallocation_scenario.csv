@@ -1,0 +1,2 @@
+from_carrier,to_carrier,shipments_moved,cost_before,cost_after,extra_cost,late_before,late_after,late_avoided,cost_per_late_avoided
+Prairie Express,Summit Carriers,1242,3372168.9,4301643.583925812,929474.6839258117,416.06999999999994,96.87599999999995,319.19399999999996,2911.9428433047356

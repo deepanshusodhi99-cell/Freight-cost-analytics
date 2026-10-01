@@ -1,0 +1,5 @@
+dwell_bucket,shipments,on_time_pct,avg_detention_cost,pct_with_detention,total_detention_cost
+1) under 2h,8982,88.4,0.0,0.0,0.0
+2) 2-4h,11337,88.1,51.31,74.6,581741.0
+3) 4-6h,2827,83.9,174.02,74.1,491954.0
+4) 6h+,854,75.4,351.41,75.8,300108.0

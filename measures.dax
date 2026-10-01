@@ -1,0 +1,102 @@
+// =====================================================================
+// measures.dax  -  Freight cost & carrier performance model
+//
+// STATUS: written but NOT run. DAX needs Power BI Desktop, which was not
+// available where this file was written. Before you rely on any measure:
+// load the model (powerbi/BUILD_GUIDE.md), then reconcile each total
+// against output/tables/*.csv. Fix whatever does not match, and only then
+// describe these measures as yours.
+//
+// Model: fact_shipments (many) -> dim_carrier, dim_lane, dim_date (one)
+//   fact_shipments[carrier_id] -> dim_carrier[carrier_id]
+//   fact_shipments[lane_id]    -> dim_lane[lane_id]
+//   fact_shipments[ship_date]  -> dim_date[date]   (mark dim_date as date table)
+// Create each measure below in a dedicated "_Measures" table.
+// =====================================================================
+
+
+// ---------- Base measures ----------
+Shipments = COUNTROWS ( fact_shipments )
+
+Total Cost = SUM ( fact_shipments[total_cost] )
+
+Linehaul Cost = SUM ( fact_shipments[linehaul_cost] )
+
+Fuel Surcharge = SUM ( fact_shipments[fuel_surcharge] )
+
+Detention Cost = SUM ( fact_shipments[detention_cost] )
+
+Total Distance KM =
+    SUMX ( fact_shipments, RELATED ( dim_lane[distance_km] ) )
+
+On-Time Shipments = SUM ( fact_shipments[on_time] )
+
+Late Shipments = [Shipments] - [On-Time Shipments]
+
+Avg Dwell Hours = AVERAGE ( fact_shipments[origin_dwell_hours] )
+
+
+// ---------- Ratios (DIVIDE avoids divide-by-zero errors) ----------
+Cost per Shipment = DIVIDE ( [Total Cost], [Shipments] )
+
+Cost per KM = DIVIDE ( [Total Cost], [Total Distance KM] )
+
+On-Time % = DIVIDE ( [On-Time Shipments], [Shipments] )
+
+Detention % of Cost = DIVIDE ( [Detention Cost], [Total Cost] )
+
+Fuel % of Linehaul = DIVIDE ( [Fuel Surcharge], [Linehaul Cost] )
+
+Share of Spend =
+    DIVIDE ( [Total Cost], CALCULATE ( [Total Cost], ALL ( dim_carrier ) ) )
+
+
+// ---------- Filtered views of the business questions ----------
+Long-Haul On-Time % =
+    CALCULATE ( [On-Time %], dim_lane[distance_band] = ">800 km" )
+
+Long-Haul Cost per KM =
+    CALCULATE ( [Cost per KM], dim_lane[distance_band] = ">800 km" )
+
+Peak Season On-Time % =
+    CALCULATE ( [On-Time %], dim_date[is_peak_season] = 1 )
+
+Off-Peak On-Time % =
+    CALCULATE ( [On-Time %], dim_date[is_peak_season] = 0 )
+
+Detention Cost, 6h+ Dwell =
+    CALCULATE ( [Detention Cost], fact_shipments[origin_dwell_hours] >= 6 )
+
+
+// ---------- Time intelligence ----------
+Cost per Shipment PM =
+    CALCULATE ( [Cost per Shipment], DATEADD ( dim_date[date], -1, MONTH ) )
+
+Cost per Shipment MoM % =
+    VAR _prev = [Cost per Shipment PM]
+    RETURN
+        IF ( NOT ISBLANK ( _prev ), DIVIDE ( [Cost per Shipment] - _prev, _prev ) )
+
+On-Time % Rolling 4 Weeks =
+    CALCULATE (
+        [On-Time %],
+        DATESINPERIOD ( dim_date[date], MAX ( dim_date[date] ), -28, DAY )
+    )
+
+Total Cost YTD = TOTALYTD ( [Total Cost], dim_date[date] )
+
+
+// ---------- Ranking and scoring ----------
+Carrier Cost Rank =
+    RANKX ( ALL ( dim_carrier[carrier_name] ), [Cost per KM], , ASC )
+
+Carrier On-Time Rank =
+    RANKX ( ALL ( dim_carrier[carrier_name] ), [On-Time %], , DESC )
+
+// Balanced score: 60% service, 40% cost. The weights are a judgement call,
+// not a finding: state them on the report page and let readers change them.
+Carrier Score (0-100) =
+    VAR _bestCost = MINX ( ALL ( dim_carrier[carrier_name] ), [Cost per KM] )
+    VAR _costIndex = DIVIDE ( _bestCost, [Cost per KM] )   // 1.0 = cheapest carrier
+    RETURN
+        100 * ( 0.6 * [On-Time %] + 0.4 * _costIndex )

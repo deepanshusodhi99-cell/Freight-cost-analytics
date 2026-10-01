@@ -1,0 +1,16 @@
+lane_id,origin_dc,destination,distance_km,distance_band
+1,Toronto DC,London,190,<300 km
+2,Toronto DC,Windsor,370,300-800 km
+3,Toronto DC,Ottawa,450,300-800 km
+4,Toronto DC,Montreal,545,300-800 km
+5,Toronto DC,Quebec City,790,300-800 km
+6,Toronto DC,Thunder Bay,1400,>800 km
+7,Toronto DC,Halifax,1800,>800 km
+8,Toronto DC,Winnipeg,2100,>800 km
+9,Calgary DC,Lethbridge,210,<300 km
+10,Calgary DC,Edmonton,300,<300 km
+11,Calgary DC,Kelowna,600,300-800 km
+12,Calgary DC,Saskatoon,610,300-800 km
+13,Calgary DC,Regina,760,300-800 km
+14,Calgary DC,Vancouver,970,>800 km
+15,Calgary DC,Winnipeg,1330,>800 km

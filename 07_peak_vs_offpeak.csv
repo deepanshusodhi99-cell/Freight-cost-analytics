@@ -1,0 +1,3 @@
+period,shipments,cost_per_shipment,avg_detention_cost,avg_dwell_hrs,on_time_pct
+Peak season,3399,1553.01,99.77,3.49,81.9
+Rest of year,20601,1497.6,50.22,2.56,88.2

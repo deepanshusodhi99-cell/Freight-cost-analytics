@@ -1,0 +1,9 @@
+carrier_name,shipments,total_cost,cost_per_shipment,cost_per_km,on_time_pct,avg_dwell_hrs,detention_pct_of_cost
+Summit Carriers,1936,3353281.0,1732.07,2.534,94.7,2.71,3.3
+Trans-Can Direct,2340,3847169.0,1644.09,2.401,91.1,2.78,3.7
+Maple Line Freight,3230,4874065.0,1509.0,2.208,90.1,2.67,3.7
+Northern Haul Co,2939,4622784.0,1572.91,2.302,89.3,2.7,3.7
+Lakeshore Logistics,2877,4382282.0,1523.21,2.251,87.7,2.68,3.7
+Eastbound Transport,2603,3846985.0,1477.9,2.158,85.6,2.67,3.7
+Prairie Express,5238,7030965.0,1342.3,1.981,83.2,2.7,4.3
+Redline Freight,2837,4173126.0,1470.96,2.11,82.4,2.68,4.0
